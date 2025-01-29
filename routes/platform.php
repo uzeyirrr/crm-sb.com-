@@ -17,6 +17,9 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\CategoryListScreen;
+use App\Orchid\Screens\CategoryEditScreen;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -132,3 +135,22 @@ Route::screen('appointments/create', \App\Orchid\Screens\AppointmentEditScreen::
 
 Route::screen('appointments/{appointment}/edit', \App\Orchid\Screens\AppointmentEditScreen::class)
     ->name('platform.appointments.edit');
+
+// Kategori route'ları
+Route::screen('categories', CategoryListScreen::class)
+    ->name('platform.categories')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Kategoriler', route('platform.categories')));
+
+Route::screen('category/create', CategoryEditScreen::class)
+    ->name('platform.categories.create')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.categories')
+        ->push('Yeni Kategori'));
+
+Route::screen('category/{category}', CategoryEditScreen::class)
+    ->name('platform.categories.edit')
+    ->breadcrumbs(fn (Trail $trail, Category $category) => $trail
+        ->parent('platform.categories')
+        ->push('Kategori Düzenle'));

@@ -2,7 +2,21 @@
 
 ## Proje Özellikleri
 
-### 1. Zaman Dilimi Yönetimi
+### 1. Kategori Yönetimi
+- Kategorileri oluşturma, düzenleme ve silme
+- Her kategori için:
+  - İsim tanımlama
+  - Açıklama ekleme
+  - Aktiflik durumu
+  - Otomatik slug oluşturma
+  - Varsayılan kategori koruması
+- Özel Özellikler:
+  - Kategori pasif yapıldığında alt slotlar otomatik pasif olur
+  - Kategori silindiğinde alt slotlar varsayılan kategoriye taşınır
+  - Varsayılan kategori silinemez ve her zaman aktiftir
+  - Benzersiz slug sistemi (otomatik artırımlı)
+
+### 2. Zaman Dilimi Yönetimi
 - Zaman dilimlerini oluşturma, düzenleme ve silme
 - Her zaman dilimi için:
   - İsim tanımlama
@@ -11,8 +25,9 @@
   - Maksimum randevu sayısı
   - Aktiflik durumu
   - Açıklama ekleme
+  - Kategori seçimi
 
-### 2. Randevu Yönetimi
+### 3. Randevu Yönetimi
 - Detaylı randevu bilgileri:
   - Kişisel Bilgiler:
     - İsim ve Soyisim
@@ -39,12 +54,12 @@
     - Ekip ataması
     - Randevu durumu (Beklemede, Onaylandı, Tamamlandı, İptal Edildi)
 
-### 3. Ekip Yönetimi
+### 4. Ekip Yönetimi
 - Ekip oluşturma ve düzenleme
 - Ekip üyelerini atama
 - Ekiplere randevu atama
 
-### 4. Kullanıcı Yönetimi
+### 5. Kullanıcı Yönetimi
 - Admin paneli erişimi
 - Rol ve izin yönetimi
 - Kullanıcı oluşturma ve düzenleme
@@ -52,18 +67,25 @@
 ## Teknik Özellikler
 
 ### Veritabanı Tabloları
-1. `time_slots`: Zaman dilimlerinin yönetimi
-   - Temel bilgiler (isim, saat aralığı)
-   - Randevu ayarları
+1. `categories`: Kategori yönetimi
+   - Temel bilgiler (isim, açıklama)
+   - Slug sistemi
+   - Aktiflik durumu
    - Soft delete özelliği
 
-2. `appointments`: Randevu kayıtları
+2. `time_slots`: Zaman dilimlerinin yönetimi
+   - Temel bilgiler (isim, saat aralığı)
+   - Randevu ayarları
+   - Kategori ilişkisi
+   - Soft delete özelliği
+
+3. `appointments`: Randevu kayıtları
    - Müşteri bilgileri
    - Konum bilgileri
    - Randevu detayları
    - Soft delete özelliği
 
-3. `teams`: Ekip yönetimi
+4. `teams`: Ekip yönetimi
    - Ekip bilgileri
    - Üye ilişkileri
 
@@ -104,9 +126,11 @@ php artisan serve
 - Şifre: password123
 
 ## Önemli Notlar
-- Randevu oluşturmadan önce zaman dilimi tanımlanmalıdır
+- Randevu oluşturmadan önce kategori ve zaman dilimi tanımlanmalıdır
 - Randevular için ekip ataması zorunludur
 - Tamamlanan veya iptal edilen randevular düzenlenemez
 - Çatı fotoğrafları için sadece resim dosyaları kabul edilir
 - Telefon numaraları otomatik olarak +90 formatına dönüştürülür
 - Saat seçimleri 24 saat formatında yapılır
+- Varsayılan kategori silinemez ve her zaman aktiftir
+- Kategori pasif yapıldığında içindeki tüm slotlar otomatik pasif olur

@@ -18,10 +18,11 @@ class TimeSlot extends Model
         'name',
         'start_time',
         'end_time',
-        'is_active',
+        'interval',
         'max_appointments',
-        'interval_hours',
-        'description'
+        'is_active',
+        'description',
+        'category_id'
     ];
 
     protected $casts = [
@@ -46,6 +47,18 @@ class TimeSlot extends Model
         'created_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Kategori pasif olduğunda slotları pasif yap
+        static::updating(function ($timeSlot) {
+            if ($timeSlot->category && !$timeSlot->category->is_active) {
+                $timeSlot->is_active = false;
+            }
+        });
+    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
@@ -64,5 +77,10 @@ class TimeSlot extends Model
             ->count();
 
         return $this->is_active && $appointmentsCount < $this->max_appointments;
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

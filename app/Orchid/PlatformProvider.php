@@ -56,8 +56,19 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.teams.create')
                 ->permission('platform.teams.create'),
 
+            Menu::make('Kategoriler')
+                ->icon('folder')
+                ->route('platform.categories')
+                ->permission('platform.categories')
+                ->title('Kategori Yönetimi'),
+
+            Menu::make('Yeni Kategori')
+                ->icon('plus')
+                ->route('platform.categories.create')
+                ->permission('platform.categories.create'),
+
             Menu::make(__('Users'))
-                ->icon('user')
+                ->icon('users')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
                 ->title(__('Access rights')),
@@ -93,6 +104,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.teams', 'Takımları Görüntüle')
                 ->addPermission('platform.teams.create', 'Takım Oluştur')
                 ->addPermission('platform.teams.edit', 'Takım Düzenle'),
+
+            ItemPermission::group('Kategori Yönetimi')
+                ->addPermission('platform.categories', 'Kategorileri Görüntüle')
+                ->addPermission('platform.categories.create', 'Kategori Oluştur')
+                ->addPermission('platform.categories.edit', 'Kategori Düzenle')
+                ->addPermission('platform.categories.delete', 'Kategori Sil'),
         ];
     }
 }
