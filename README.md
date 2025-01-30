@@ -4,7 +4,7 @@
 
 1. Projeyi klonlayın:
 ```bash
-git clone https://github.com/yourusername/crm-sb.com.git
+git clone https://github.com/uzeyirrr/crm-sb.com-.git
 cd crm-sb.com
 ```
 
