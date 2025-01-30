@@ -3,15 +3,18 @@
 namespace App\Orchid\Screens;
 
 use App\Models\TimeSlot;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
+use Carbon\Carbon;
 
 class TimeSlotEditScreen extends Screen
 {
@@ -26,6 +29,10 @@ class TimeSlotEditScreen extends Screen
     {
         if ($slot->exists) {
             $this->slot = $slot;
+        } else {
+            // URL'den tarih parametresi varsa onu kullan
+            $date = request('date') ? Carbon::parse(request('date')) : now();
+            $this->slot->date = $date;
         }
         
         return [
@@ -79,6 +86,19 @@ class TimeSlotEditScreen extends Screen
                     ->placeholder('Zaman dilimi adını girin')
                     ->required(),
 
+                Select::make('slot.category_id')
+                    ->title('Kategori')
+                    ->fromModel(Category::class, 'name')
+                    ->required()
+                    ->help('Bu zaman diliminin ait olduğu kategori'),
+
+                DateTimer::make('slot.date')
+                    ->title('Tarih')
+                    ->format('Y-m-d')
+                    ->required()
+                    ->value($this->slot->exists ? $this->slot->date : now())
+                    ->help('Bu zaman diliminin tarihi'),
+
                 Select::make('slot.start_time')
                     ->title('Başlangıç Saati')
                     ->options($hours)
@@ -122,13 +142,34 @@ class TimeSlotEditScreen extends Screen
 
     public function save(Request $request)
     {
-        $data = $request->get('slot');
+        $data = $request->validate([
+            'slot.name' => 'required|string',
+            'slot.category_id' => 'required|exists:categories,id',
+            'slot.date' => 'required|date',
+            'slot.start_time' => 'required',
+            'slot.end_time' => 'required',
+            'slot.interval_hours' => 'required|integer',
+            'slot.max_appointments' => 'required|integer|min:1',
+            'slot.is_active' => 'boolean',
+            'slot.description' => 'nullable|string',
+        ]);
+
+        $slotData = $data['slot'];
         
-        $this->slot->fill($data)->save();
+        // Önce tarihi ayarla
+        $this->slot->date = Carbon::parse($slotData['date']);
+        
+        // Sonra diğer alanları doldur
+        $this->slot->fill($slotData);
+        
+        // Kaydet
+        $this->slot->save();
 
         Toast::info('Zaman dilimi başarıyla kaydedildi');
 
-        return redirect()->route('platform.slots');
+        return redirect()->route('platform.calendar', [
+            'selected_date' => $this->slot->date->format('Y-m-d')
+        ]);
     }
 
     public function remove()

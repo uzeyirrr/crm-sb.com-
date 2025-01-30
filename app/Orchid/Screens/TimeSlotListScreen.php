@@ -7,6 +7,7 @@ use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
+use Carbon\Carbon;
 
 class TimeSlotListScreen extends Screen
 {
@@ -18,7 +19,10 @@ class TimeSlotListScreen extends Screen
     public function query(): array
     {
         return [
-            'slots' => TimeSlot::filters()->defaultSort('start_time')->paginate()
+            'slots' => TimeSlot::with('category')
+                ->filters()
+                ->defaultSort('date')
+                ->paginate()
         ];
     }
 
@@ -73,13 +77,21 @@ class TimeSlotListScreen extends Screen
                     ->render(fn (TimeSlot $slot) => Link::make($slot->name)
                         ->route('platform.slots.edit', $slot)),
 
+                TD::make('category.name', 'Kategori')
+                    ->sort()
+                    ->render(fn (TimeSlot $slot) => $slot->category ? $slot->category->name : '-'),
+
+                TD::make('date', 'Tarih')
+                    ->sort()
+                    ->render(fn (TimeSlot $slot) => $slot->date ? $slot->date->format('d.m.Y') : '-'),
+
                 TD::make('start_time', 'Başlangıç')
                     ->sort()
-                    ->render(fn (TimeSlot $slot) => $slot->start_time->format('H:i')),
+                    ->render(fn (TimeSlot $slot) => $slot->getStartTimeFormatted()),
 
                 TD::make('end_time', 'Bitiş')
                     ->sort()
-                    ->render(fn (TimeSlot $slot) => $slot->end_time->format('H:i')),
+                    ->render(fn (TimeSlot $slot) => $slot->getEndTimeFormatted()),
 
                 TD::make('max_appointments', 'Max. Randevu')
                     ->sort(),

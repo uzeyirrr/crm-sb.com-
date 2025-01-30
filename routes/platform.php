@@ -22,6 +22,7 @@ use App\Orchid\Screens\CategoryEditScreen;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
+use App\Orchid\Screens\CalendarScreen;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,3 +155,9 @@ Route::screen('category/{category}', CategoryEditScreen::class)
     ->breadcrumbs(fn (Trail $trail, Category $category) => $trail
         ->parent('platform.categories')
         ->push('Kategori Düzenle'));
+
+Route::screen('calendar', CalendarScreen::class)
+    ->name('platform.calendar')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Takvim'));

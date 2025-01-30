@@ -3,7 +3,6 @@
 namespace App\Orchid\Screens;
 
 use App\Models\Appointment;
-use App\Models\Team;
 use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
@@ -33,7 +32,8 @@ class AppointmentEditScreen extends Screen
         }
         
         return [
-            'appointment' => $this->appointment
+            'appointment' => $this->appointment,
+            'creator' => auth()->user()->name
         ];
     }
 
@@ -134,20 +134,16 @@ class AppointmentEditScreen extends Screen
                 ],
                 'Randevu Detayları' => [
                     Layout::rows([
-                        DateTimer::make('appointment.date')
-                            ->title('Randevu Tarihi')
-                            ->format('Y-m-d')
-                            ->required(),
-
                         Select::make('appointment.time_slot_id')
                             ->title('Zaman Dilimi')
                             ->fromModel(TimeSlot::class, 'name')
-                            ->required(),
+                            ->required()
+                            ->help('Seçilen zaman dilimine göre randevu tarihi otomatik belirlenecektir'),
 
-                        Select::make('appointment.team_id')
-                            ->title('Ekip')
-                            ->fromModel(Team::class, 'name')
-                            ->required(),
+                        Input::make('creator')
+                            ->title('Oluşturan')
+                            ->readonly()
+                            ->canSee($this->appointment->exists),
 
                         Input::make('appointment.monthly_electricity_usage')
                             ->title('Aylık Elektrik Tüketimi (kWh)')
@@ -184,12 +180,16 @@ class AppointmentEditScreen extends Screen
         $data = $request->get('appointment');
         
         if (!$this->appointment->exists) {
-            $data['created_by'] = auth()->id();
+            $data['creator_id'] = auth()->id();
+            
+            // Seçilen zaman diliminin tarihini al
+            $timeSlot = TimeSlot::findOrFail($data['time_slot_id']);
+            $data['date'] = $timeSlot->date;
         }
         
         $this->appointment->fill($data)->save();
 
-        Toast::info($this->appointment->exists ? 'Randevu güncellendi' : 'Randevu oluşturuldu');
+        Toast::info('Randevu başarıyla kaydedildi');
 
         return redirect()->route('platform.appointments');
     }

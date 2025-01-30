@@ -16,25 +16,24 @@ class Appointment extends Model
     use HasFactory, SoftDeletes, AsSource, Filterable;
 
     protected $fillable = [
-        'time_slot_id',
-        'team_id',
-        'created_by',
-        'date',
         'first_name',
         'last_name',
         'phone',
         'email',
         'contact_gender',
         'household_size',
-        'latitude',
-        'longitude',
+        'customer_age',
         'street',
         'city',
-        'customer_notes',
-        'customer_age',
         'postal_code',
+        'latitude',
+        'longitude',
+        'date',
+        'time_slot_id',
+        'creator_id',
         'monthly_electricity_usage',
         'status',
+        'customer_notes',
         'roof_image'
     ];
 
@@ -42,9 +41,9 @@ class Appointment extends Model
         'date' => 'date',
         'household_size' => 'integer',
         'customer_age' => 'integer',
-        'latitude' => 'decimal:8',
-        'longitude' => 'decimal:8',
-        'monthly_electricity_usage' => 'decimal:2'
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'monthly_electricity_usage' => 'float'
     ];
 
     protected $allowedFilters = [
@@ -56,7 +55,6 @@ class Appointment extends Model
         'email'           => Like::class,
         'city'           => Like::class,
         'timeSlot.name'   => Like::class,
-        'team.name'       => Like::class,
         'creator.name'    => Like::class,
     ];
 
@@ -68,7 +66,6 @@ class Appointment extends Model
         'created_at',
         'city',
         'timeSlot.name',
-        'team.name',
         'creator.name',
     ];
 
@@ -77,14 +74,9 @@ class Appointment extends Model
         return $this->belongsTo(TimeSlot::class);
     }
 
-    public function team()
-    {
-        return $this->belongsTo(Team::class);
-    }
-
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function isEditable()

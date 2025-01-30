@@ -1,119 +1,43 @@
 # CRM Randevu Sistemi
 
-## Proje Özellikleri
+## Kurulum Adımları
 
-### 1. Kategori Yönetimi
-- Kategorileri oluşturma, düzenleme ve silme
-- Her kategori için:
-  - İsim tanımlama
-  - Açıklama ekleme
-  - Aktiflik durumu
-  - Otomatik slug oluşturma
-  - Varsayılan kategori koruması
-- Özel Özellikler:
-  - Kategori pasif yapıldığında alt slotlar otomatik pasif olur
-  - Kategori silindiğinde alt slotlar varsayılan kategoriye taşınır
-  - Varsayılan kategori silinemez ve her zaman aktiftir
-  - Benzersiz slug sistemi (otomatik artırımlı)
+1. Projeyi klonlayın:
+```bash
+git clone https://github.com/yourusername/crm-sb.com.git
+cd crm-sb.com
+```
 
-### 2. Zaman Dilimi Yönetimi
-- Zaman dilimlerini oluşturma, düzenleme ve silme
-- Her zaman dilimi için:
-  - İsim tanımlama
-  - Başlangıç ve bitiş saati (24 saat formatında)
-  - Randevu aralığı seçimi (2, 3, 4 veya 6 saat)
-  - Maksimum randevu sayısı
-  - Aktiflik durumu
-  - Açıklama ekleme
-  - Kategori seçimi
+2. Composer bağımlılıklarını yükleyin:
+```bash
+composer install
+```
 
-### 3. Randevu Yönetimi
-- Detaylı randevu bilgileri:
-  - Kişisel Bilgiler:
-    - İsim ve Soyisim
-    - Telefon (+90 formatında)
-    - E-posta
-    - Görüşülen Kişinin Cinsiyeti (Kadın/Erkek)
-    - Hanede Yaşayan Kişi Sayısı
-    - Müşteri Yaşı
-  
-  - Konum Bilgileri:
-    - Harita üzerinden konum seçimi
-    - Sokak adresi
-    - Şehir
-    - Posta kodu
-  
-  - Teknik Bilgiler:
-    - Aylık elektrik tüketimi
-    - Çatı fotoğrafı
-    - Müşteri notları
+3. `.env` dosyasını oluşturun:
+```bash
+cp .env.example .env
+```
 
-  - Randevu Detayları:
-    - Tarih seçimi
-    - Zaman dilimi seçimi
-    - Ekip ataması
-    - Randevu durumu (Beklemede, Onaylandı, Tamamlandı, İptal Edildi)
+4. `.env` dosyasını düzenleyin:
+- Veritabanı bilgilerinizi girin
+- Uygulama adını ve URL'sini ayarlayın
 
-### 4. Ekip Yönetimi
-- Ekip oluşturma ve düzenleme
-- Ekip üyelerini atama
-- Ekiplere randevu atama
+5. Uygulama anahtarını oluşturun:
+```bash
+php artisan key:generate
+```
 
-### 5. Kullanıcı Yönetimi
-- Admin paneli erişimi
-- Rol ve izin yönetimi
-- Kullanıcı oluşturma ve düzenleme
-
-## Teknik Özellikler
-
-### Veritabanı Tabloları
-1. `categories`: Kategori yönetimi
-   - Temel bilgiler (isim, açıklama)
-   - Slug sistemi
-   - Aktiflik durumu
-   - Soft delete özelliği
-
-2. `time_slots`: Zaman dilimlerinin yönetimi
-   - Temel bilgiler (isim, saat aralığı)
-   - Randevu ayarları
-   - Kategori ilişkisi
-   - Soft delete özelliği
-
-3. `appointments`: Randevu kayıtları
-   - Müşteri bilgileri
-   - Konum bilgileri
-   - Randevu detayları
-   - Soft delete özelliği
-
-4. `teams`: Ekip yönetimi
-   - Ekip bilgileri
-   - Üye ilişkileri
-
-### Kullanılan Teknolojiler
-- Laravel Framework
-- Orchid Admin Panel
-- MySQL Veritabanı
-- Google Maps Entegrasyonu (Konum seçimi için)
-
-### Güvenlik Özellikleri
-- Kullanıcı doğrulama
-- Rol tabanlı yetkilendirme
-- CSRF koruması
-- Soft delete ile veri güvenliği
-
-## Kurulum
-
-1. Veritabanı migration'larını çalıştırma:
+6. Veritabanını oluşturun:
 ```bash
 php artisan migrate:fresh
 ```
 
-2. Admin kullanıcısı oluşturma:
+7. Admin kullanıcısını oluşturun:
 ```bash
-php artisan orchid:admin admin admin@admin.com password123
+php artisan orchid:admin Admin admin@admin.com password123
 ```
 
-3. Development server'ı başlatma:
+8. Geliştirme sunucusunu başlatın:
 ```bash
 php artisan serve
 ```
@@ -121,16 +45,116 @@ php artisan serve
 ## Erişim Bilgileri
 
 ### Admin Panel
-- URL: http://127.0.0.1:8000/admin
+- URL: http://localhost:8000/admin
 - E-posta: admin@admin.com
 - Şifre: password123
 
-## Önemli Notlar
-- Randevu oluşturmadan önce kategori ve zaman dilimi tanımlanmalıdır
-- Randevular için ekip ataması zorunludur
-- Tamamlanan veya iptal edilen randevular düzenlenemez
-- Çatı fotoğrafları için sadece resim dosyaları kabul edilir
-- Telefon numaraları otomatik olarak +90 formatına dönüştürülür
-- Saat seçimleri 24 saat formatında yapılır
-- Varsayılan kategori silinemez ve her zaman aktiftir
-- Kategori pasif yapıldığında içindeki tüm slotlar otomatik pasif olur
+## Modüller ve Özellikler
+
+### 1. Takvim Modülü
+- Haftalık görünüm
+- Kategori filtresi
+- Tarih seçimi
+- Zaman dilimi ekleme/düzenleme
+- Randevu durumu takibi
+
+### 2. Randevu Yönetimi
+- Randevu oluşturma ve düzenleme
+- Müşteri bilgileri
+- Konum bilgileri
+- Randevu durumu takibi
+- Çatı fotoğrafı yükleme
+
+### 3. Zaman Dilimleri
+- İsim ve açıklama
+- Başlangıç ve bitiş saati
+- Maksimum randevu sayısı
+- Kategori seçimi
+- Aktiflik durumu
+
+### 4. Kategori Yönetimi
+- Kategori oluşturma ve düzenleme
+- Varsayılan kategori
+- Aktiflik durumu
+- Alt zaman dilimlerini yönetme
+
+### 5. Takım Yönetimi
+- Takım oluşturma ve düzenleme
+- Üye ekleme ve çıkarma
+- Randevu atama
+
+## Rol ve İzinler
+
+### Admin Rolü İzinleri
+1. Takvim Yönetimi
+   - Takvimi görüntüleme
+   - Randevuları görüntüleme/oluşturma/düzenleme
+   - Zaman dilimlerini görüntüleme/oluşturma/düzenleme
+
+2. Kategori Yönetimi
+   - Kategorileri görüntüleme/oluşturma/düzenleme/silme
+
+3. Takım Yönetimi
+   - Takımları görüntüleme/oluşturma/düzenleme
+
+4. Sistem Yönetimi
+   - Kullanıcıları yönetme
+   - Rolleri yönetme
+
+## Teknik Detaylar
+
+### Kullanılan Teknolojiler
+- Laravel 10
+- Orchid Admin Panel
+- MySQL
+- PHP 8.1+
+
+### Veritabanı Tabloları
+1. `appointments`: Randevu kayıtları
+2. `time_slots`: Zaman dilimleri
+3. `categories`: Kategoriler
+4. `teams`: Takımlar
+5. `users`: Kullanıcılar
+6. `roles`: Roller
+
+### Güvenlik Özellikleri
+- Rol tabanlı yetkilendirme
+- Form doğrulama
+- CSRF koruması
+- Soft delete desteği
+
+## Geliştirici Notları
+
+1. Yeni bir migration oluştururken:
+```bash
+php artisan make:migration migration_adi
+```
+
+2. Yeni bir model oluştururken:
+```bash
+php artisan make:model ModelAdi
+```
+
+3. Yeni bir controller oluştururken:
+```bash
+php artisan make:controller ControllerAdi
+```
+
+4. Cache temizleme:
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+## Katkıda Bulunma
+
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'feat: add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
+
+## Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.

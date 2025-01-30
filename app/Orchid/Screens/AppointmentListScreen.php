@@ -18,7 +18,7 @@ class AppointmentListScreen extends Screen
     public function query(): array
     {
         return [
-            'appointments' => Appointment::with(['timeSlot', 'team', 'creator'])
+            'appointments' => Appointment::with(['timeSlot', 'creator'])
                 ->filters()
                 ->defaultSort('date', 'desc')
                 ->paginate()
@@ -70,30 +70,36 @@ class AppointmentListScreen extends Screen
     {
         return [
             Layout::table('appointments', [
-                TD::make('date', 'Tarih')
+                TD::make('first_name', 'İsim')
                     ->sort()
-                    ->render(fn (Appointment $appointment) => Link::make($appointment->date->format('d.m.Y'))
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Appointment $appointment) => Link::make($appointment->first_name . ' ' . $appointment->last_name)
                         ->route('platform.appointments.edit', $appointment)),
 
+                TD::make('phone', 'Telefon')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+
+                TD::make('date', 'Tarih')
+                    ->sort()
+                    ->render(fn (Appointment $appointment) => $appointment->date->format('d.m.Y')),
+
                 TD::make('timeSlot.name', 'Zaman Dilimi')
-                    ->sort()
-                    ->filter(TD::FILTER_TEXT),
-
-                TD::make('team.name', 'Takım')
-                    ->sort()
-                    ->filter(TD::FILTER_TEXT),
-
-                TD::make('status', 'Durum')
-                    ->sort()
-                    ->render(fn (Appointment $appointment) => ucfirst($appointment->status)),
+                    ->sort(),
 
                 TD::make('creator.name', 'Oluşturan')
                     ->sort()
-                    ->filter(TD::FILTER_TEXT),
+                    ->render(fn (Appointment $appointment) => $appointment->creator ? $appointment->creator->name : '-'),
 
-                TD::make('created_at', 'Oluşturulma')
+                TD::make('status', 'Durum')
                     ->sort()
-                    ->render(fn (Appointment $appointment) => $appointment->created_at->format('d.m.Y H:i')),
+                    ->render(fn (Appointment $appointment) => match($appointment->status) {
+                        'pending' => 'Beklemede',
+                        'confirmed' => 'Onaylandı',
+                        'completed' => 'Tamamlandı',
+                        'cancelled' => 'İptal Edildi',
+                        default => $appointment->status
+                    }),
             ])
         ];
     }

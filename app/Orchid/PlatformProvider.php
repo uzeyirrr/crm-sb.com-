@@ -34,27 +34,21 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            Menu::make('Randevular')
+            Menu::make('Takvim')
                 ->icon('calendar')
+                ->route('platform.calendar')
+                ->title('Randevu Yönetimi')
+                ->permission('platform.calendar'),
+
+            Menu::make('Randevular')
+                ->icon('note')
                 ->route('platform.appointments')
-                ->permission('platform.appointments')
-                ->title('Randevu Yönetimi'),
+                ->permission('platform.appointments'),
 
             Menu::make('Zaman Dilimleri')
                 ->icon('clock')
                 ->route('platform.slots')
                 ->permission('platform.slots'),
-
-            Menu::make('Takımlar')
-                ->icon('people')
-                ->route('platform.teams')
-                ->title('Takım Yönetimi')
-                ->permission('platform.teams'),
-
-            Menu::make('Yeni Takım')
-                ->icon('plus')
-                ->route('platform.teams.create')
-                ->permission('platform.teams.create'),
 
             Menu::make('Kategoriler')
                 ->icon('folder')
@@ -66,6 +60,17 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('plus')
                 ->route('platform.categories.create')
                 ->permission('platform.categories.create'),
+
+            Menu::make('Takımlar')
+                ->icon('people')
+                ->route('platform.teams')
+                ->title('Takım Yönetimi')
+                ->permission('platform.teams'),
+
+            Menu::make('Yeni Takım')
+                ->icon('plus')
+                ->route('platform.teams.create')
+                ->permission('platform.teams.create'),
 
             Menu::make(__('Users'))
                 ->icon('users')
@@ -93,6 +98,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.users', __('Users')),
 
             ItemPermission::group('Randevu Yönetimi')
+                ->addPermission('platform.calendar', 'Takvimi Görüntüle')
                 ->addPermission('platform.appointments', 'Randevuları Görüntüle')
                 ->addPermission('platform.appointments.create', 'Randevu Oluştur')
                 ->addPermission('platform.appointments.edit', 'Randevu Düzenle')
